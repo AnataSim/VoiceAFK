@@ -154,6 +154,22 @@ export default function Home() {
     };
   }, [backendState.status]);
 
+  // Paste token from clipboard helper
+  const handlePasteToken = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        setBotToken(text.trim());
+        saveConfig("voice_bot_token", text.trim());
+        addLocalLog("Token berhasil ditempel dari clipboard.", "success");
+      } else {
+        addLocalLog("Clipboard kosong.", "warning");
+      }
+    } catch (err) {
+      addLocalLog("Gagal menempelkan token. Pastikan Anda mengizinkan akses clipboard di browser.", "error");
+    }
+  };
+
   // Login Bot (Save Token & Initialize)
   const handleLoginBot = async () => {
     setIsLoggingInBot(true);
@@ -369,12 +385,22 @@ export default function Home() {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Token Bot Discord</label>
-                    <button 
-                      onClick={() => setShowToken(!showToken)}
-                      className="text-[10px] font-semibold text-purple-400 hover:text-purple-300 transition-colors uppercase tracking-wider"
-                    >
-                      {showToken ? "Sembunyikan" : "Tampilkan"}
-                    </button>
+                    <div className="flex gap-3">
+                      <button 
+                        onClick={handlePasteToken}
+                        className="text-[10px] font-semibold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                        type="button"
+                      >
+                        📋 Tempel
+                      </button>
+                      <button 
+                        onClick={() => setShowToken(!showToken)}
+                        className="text-[10px] font-semibold text-purple-400 hover:text-purple-300 transition-colors uppercase tracking-wider cursor-pointer"
+                        type="button"
+                      >
+                        {showToken ? "Sembunyikan" : "Tampilkan"}
+                      </button>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <input
